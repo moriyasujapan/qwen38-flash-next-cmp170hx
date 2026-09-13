@@ -25,6 +25,8 @@ Measured on 2026-09-13. These are results from one machine, not guaranteed perfo
 | RadixCache-hit TTFT for the same prefix | **0.612 s** |
 | RadixCache speedup | **15.02×** |
 | KV token capacity, FP32 → FP16 GDN state | 415,296 → **481,344** |
+| 170Tune HBM gate, NDIV70 / REFRESH24 | **12/12 per card, 0 errors** |
+| 170Tune SM +250 / 1400 candidate | **Rejected by SGLang workload (Xid 13)** |
 
 `quick_bench.py` and `bench_matrix.py` use different prompts and output lengths. The 67.9
 tok/s result is the median of three 1,024-token generations; 64.25 tok/s is the median of
@@ -169,6 +171,31 @@ contains `g593134d17`. Three hunks are expected to reject. The Docker build veri
 reject set, ports the scheduler event change and input-logprob guard, checks all core FP6/QSA
 files, and imports the patched tokenizer manager. An unexpected reject fails the build.
 
+## Optional 170Tune hardware profile
+
+The tested production hardware profile uses [cachenetics/170tune](https://github.com/cachenetics/170tune):
+
+```text
+SM offset: stock (0 MHz)
+SM clock lock: none
+HBM NDIV: 70
+HBM timing: REFRESH 24
+```
+
+Both cards independently passed 12/12 hot full-VRAM sweeps plus compute checks at the exact HBM
+profile. Qualification is per card; never copy receipts or persisted profiles between GPUs.
+
+The `+250 MHz / 1400 MHz` SM candidate also passed four synthetic sweeps and the bit-exact GEMM
+check on each card, but later crashed a real SGLang decode workload with Xid 13 / illegal
+instruction. It is therefore rejected and quarantined on the failing card. The small observed
+decode change from 67.9 to 69.1 tok/s is not a safe gain and is not the production setting. This
+result is a useful reminder that a synthetic hardware gate is necessary but not sufficient; the
+serving engine must be the final qualification rung.
+
+See the [complete 170Tune lab record](docs/lab/2026-09-13-170tune.md). Hardware tuning can corrupt
+results or wedge a GPU. Snapshot stock values first, gate every card independently, and keep a
+remote recovery path before enabling persistence.
+
 ## Benchmarks
 
 Quick single-stream test:
@@ -231,6 +258,7 @@ configuration may override environment variables. Update the saved OpenAI-compat
 - [SGLang](https://github.com/sgl-project/sglang)
 - [syv-ai/qwen38-27b-rtx3090](https://github.com/syv-ai/qwen38-27b-rtx3090)
 - [allover326/deepseek-v4-cmp170hx](https://github.com/allover326/deepseek-v4-cmp170hx)
+- [cachenetics/170tune](https://github.com/cachenetics/170tune)
 
 The core FP6/INT8, PLE-offload, QSA, and MTP support comes from the patch distributed with
 Soomin33's checkpoint. This repository provides audited integration, launch, warm-up,

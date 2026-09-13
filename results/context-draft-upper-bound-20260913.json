@@ -1,0 +1,9 @@
+{
+  "schema": "context-draft-upper-bound-v1",
+  "prompt_tokens": 8,
+  "continuation_tokens": 6,
+  "max_draft": 8,
+  "matched_prefix_tokens": 0,
+  "candidate": "",
+  "interpretation": "offline suffix/prefix match only; not a serving-quality or acceptance result"
+}

@@ -26,6 +26,7 @@ Measured on 2026-09-13. These are results from one machine, not guaranteed perfo
 | RadixCache speedup | **15.02×** |
 | KV token capacity, FP32 → FP16 GDN state | 415,296 → **481,344** |
 | 170Tune HBM gate, NDIV70 / REFRESH24 | **12/12 per card, 0 errors** |
+| Final SM-stock + qualified-HBM decode | **70.5 tok/s median, 3/3 complete** |
 | 170Tune SM +250 / 1400 candidate | **Rejected by SGLang workload (Xid 13)** |
 
 `quick_bench.py` and `bench_matrix.py` use different prompts and output lengths. The 67.9
@@ -191,6 +192,11 @@ instruction. It is therefore rejected and quarantined on the failing card. The s
 decode change from 67.9 to 69.1 tok/s is not a safe gain and is not the production setting. This
 result is a useful reminder that a synthetic hardware gate is necessary but not sufficient; the
 serving engine must be the final qualification rung.
+
+After rolling both SMs back to stock while retaining the qualified HBM profile, a fresh
+three-run test completed at 70.5, 71.1, and 69.4 tok/s (70.5 tok/s median) with no new Xid. Both
+SGLang and OpenWebUI returned HTTP 200, and the OpenWebUI container reached the served model ID
+through the configured OpenAI-compatible endpoint.
 
 See the [complete 170Tune lab record](docs/lab/2026-09-13-170tune.md). Hardware tuning can corrupt
 results or wedge a GPU. Snapshot stock values first, gate every card independently, and keep a

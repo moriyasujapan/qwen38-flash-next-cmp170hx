@@ -152,6 +152,11 @@ Xid 13 / SM illegal instructionを起こし、TP rankとserverが停止しまし
 rollbackしました。永続化しているのは、24 total full-VRAM sweepsとcompute checksを通過したHBM
 profileだけです。詳細: [`docs/lab/2026-09-13-170tune.md`](lab/2026-09-13-170tune.md)。
 
+rollback後の最終`quick_bench.py`は70.5 / 71.1 / 69.4 tok/s、中央値70.5 tok/s、TTFT
+0.57 / 0.53 / 0.52秒で3/3完走しました。測定後もSGLang/OpenWebUI healthはHTTP 200、OpenWebUI
+containerからSGLangの`/v1/models`へHTTP 200、新しいXidは0件でした。この値は最終運用profileの
+sanity resultであり、stock HBMとの厳密なA/Bではありません。
+
 ## Startup
 
 cold起動ログ:

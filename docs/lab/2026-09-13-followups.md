@@ -68,6 +68,8 @@ These are reconstruction metrics, not model-quality or lookup-bandwidth results.
 runtime still consumes the FP8 raw sidecar. INT8 is a plausible next candidate; INT4 requires
 needle/semantic quality tests and a packed lookup kernel before promotion. Raw result:
 [`ple-quality-100k-20260913.json`](../../results/ple-quality-100k-20260913.json).
+`tools/ple_quantize.py` now provides a bounded-memory converter for producing candidate sidecars
+and row-scale files; it is intentionally not enabled by the launcher.
 
 ## Serving sanity after research image
 

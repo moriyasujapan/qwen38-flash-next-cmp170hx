@@ -15,6 +15,11 @@ interpretation, and rollback path. Negative results are first-class results.
 | DFlash2-style context drafting | [#5](https://github.com/moriyasujapan/qwen38-flash-next-cmp170hx/issues/5) | offline context-match upper bound | prototype or explicit blocker |
 | PLE INT8/INT4 | [#6](https://github.com/moriyasujapan/qwen38-flash-next-cmp170hx/issues/6) | sampled quantization error and lookup bandwidth | quality/bandwidth decision and runtime plan |
 
+Current branch status: MTP telemetry, contention harness, context-match upper bound, PLE
+reconstruction screen, QSA tile sweep, and W8 synthetic timing have first measurements. No
+runtime default has been promoted. True split-KV, model-level dense-prefill A/B, native
+context drafting, and PLE sidecar adoption remain follow-up implementation work.
+
 ## Experiment rules
 
 1. Keep the production launcher unchanged until an A/B passes.

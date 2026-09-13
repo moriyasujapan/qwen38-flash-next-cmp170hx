@@ -1,0 +1,84 @@
+{
+  "schema": "qsa-tile-sweep-v1",
+  "shape": {
+    "batch": 3,
+    "heads": 16,
+    "dim": 128,
+    "seq": 128
+  },
+  "kernel_note": "one (batch,head) program; tile sweep only, no split-KV reduction",
+  "records": [
+    {
+      "block_s": 32,
+      "warps": 2,
+      "ms": 0.11202560265858968,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 32,
+      "warps": 4,
+      "ms": 0.10994346936543782,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 32,
+      "warps": 8,
+      "ms": 0.1098410685857137,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 64,
+      "warps": 2,
+      "ms": 0.15073280334472655,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 64,
+      "warps": 4,
+      "ms": 0.1541802724202474,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 64,
+      "warps": 8,
+      "ms": 0.10670080184936523,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 128,
+      "warps": 2,
+      "ms": 0.10567680199941,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 128,
+      "warps": 4,
+      "ms": 0.10557440121968588,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 128,
+      "warps": 8,
+      "ms": 0.10670080184936523,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 256,
+      "warps": 2,
+      "ms": 0.10598399639129638,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 256,
+      "warps": 4,
+      "ms": 0.10577920277913412,
+      "max_abs_error": 4.76837158203125e-07
+    },
+    {
+      "block_s": 256,
+      "warps": 8,
+      "ms": 0.105403733253479,
+      "max_abs_error": 4.76837158203125e-07
+    }
+  ]
+}

@@ -29,14 +29,21 @@ token-level ITL from Prometheus. Raw result:
 (batch, head), so this is a tile/warp sweep and correctness check; it is explicitly **not** a
 true split-KV reduction yet. A true split-KV version needs partial `(max, sum, value)` buffers
 and a numerically stable reduction, with an additional workspace/capture audit. The image was
-built successfully as `sglang-fp6:research-20260913`; the GPU sweep is pending server warmup.
+built successfully as `sglang-fp6:research-20260913`. On B=3, H=16, D=128, S=128, all 12
+tile/warp choices had max absolute error `4.77e-7`; latency ranged from 0.1054 to 0.1542 ms.
+The fastest tested choice was BLOCK_S=256/WARPS=8 at 0.1054 ms, effectively tied with the
+128/4 default at 0.1056 ms. This does not justify changing the default without a real QSA shape
+sweep. Raw result: [`qsa-sweep-b3-h16-d128-s128-20260913.json`](../../results/qsa-sweep-b3-h16-d128-s128-20260913.json).
 
 ## Dense INT8 prefill (#3)
 
 `patches/apply_research_overlays.py` adds opt-in `SGLANG_W8_TIMING=1` logging around the
 W8A16 linear path. It labels each call `gemv` or `prefill` and records M/N/K and CUDA elapsed
-milliseconds. The default is off and no production flag is promoted. The same image can be
-restarted with the flag for a 1K/4K/16K/64K prefill sweep.
+milliseconds. A synthetic K=2560, N=4096 sweep reported warmed kernel medians of 0.394 ms
+(M=1), 0.394 ms (M=16), 0.407 ms (M=64), 0.411 ms (M=256), and 0.591 ms (M=1024); the
+first call includes JIT compilation. These are isolated linear timings, not end-to-end prefill
+speedups. The default is off and no production flag is promoted. Raw result:
+[`w8-prefill-sweep-20260913.json`](../../results/w8-prefill-sweep-20260913.json).
 
 ## DFlash2-style context drafting (#5)
 

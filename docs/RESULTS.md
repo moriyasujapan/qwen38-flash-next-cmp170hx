@@ -134,6 +134,24 @@ temperature 0、seed 0、thinking offで比較しました。
 会話・長文・異なる生成分布では0.4–0.8も観測しました。acceptanceはモデルだけでなくpromptとsampling
 に依存するため、代表workloadで測る必要があります。
 
+## 170Tune hardware qualification
+
+2枚を個別に検証した結果です。
+
+| profile | card A | card B | 判定 |
+|---|---:|---:|---|
+| HBM NDIV70 / REFRESH24 | 12/12、error 0、peak 60℃ | 12/12、error 0、peak 60℃ | **採用** |
+| SM +250 / ceiling 1400 | 4/4、GEMM error 0、peak 57℃ | 4/4、GEMM error 0、peak 54℃ | **実負荷で不採用** |
+
+SM候補を適用した最初の`quick_bench.py`は68.7 / 69.1 / 69.6 tok/s、中央値69.1 tok/sで完走
+しました。しかし電力・温度monitor付きの次runでは69.3 / 68.2 tok/sの後、3本目で片方のGPUが
+Xid 13 / SM illegal instructionを起こし、TP rankとserverが停止しました。最大観測値はGPUごとに
+約99.0 / 97.4W、HBM 52 / 49℃、effective SM clock 1470MHzでした。温度limitではありません。
+
+したがって69.1 tok/sを安全な性能向上とは扱いません。SM pointはquarantineし、本番はSM stockへ
+rollbackしました。永続化しているのは、24 total full-VRAM sweepsとcompute checksを通過したHBM
+profileだけです。詳細: [`docs/lab/2026-09-13-170tune.md`](lab/2026-09-13-170tune.md)。
+
 ## Startup
 
 cold起動ログ:

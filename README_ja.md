@@ -26,6 +26,8 @@ FP6/INT8・PLE offload・QSA patchを固定SGLang imageへ適用し、検証し�
 | 同prefixのRadixCache-hit TTFT | **0.612秒** |
 | RadixCacheによる短縮 | **15.02倍** |
 | GDN state FP32→FP16のKV capacity | 415,296→**481,344 tokens** |
+| 170Tune HBM gate、NDIV70 / REFRESH24 | **各card 12/12、error 0** |
+| 170Tune SM +250 / 1400候補 | **SGLang実負荷でXid 13、不採用** |
 
 `quick_bench.py`と`bench_matrix.py`はpromptと生成長が異なります。67.9 tok/sは1024 token生成
 3回の中央値、64.25 tok/sはunique promptで512 token生成3回のmatrix中央値です。同じ測定系列として
@@ -164,6 +166,31 @@ sidecarを使用します。
 rejectを厳密に確認し、scheduler eventとinput-logprob guardを移植します。FP6/QSAの中核fileと
 tokenizer managerのimportもbuild中に検査し、未知のrejectがあればbuildを失敗させます。
 
+## 170Tune hardware profile
+
+検証機の本番hardware profileには
+[cachenetics/170tune](https://github.com/cachenetics/170tune)を使用しています。
+
+```text
+SM offset: stock（0 MHz）
+SM clock lock: なし
+HBM NDIV: 70
+HBM timing: REFRESH 24
+```
+
+HBMは2枚を個別に、同一profileでhot full-VRAM 12/12 sweeps＋compute checkまで通しました。
+qualificationはcardごとです。receiptやpersist profileを別cardへコピーしてはいけません。
+
+`+250 MHz / 1400 MHz` のSM候補も各cardでsynthetic 4 sweepsとbit-exact GEMM checkを通過
+しましたが、その後の実SGLang decodeでXid 13 / illegal instructionを起こしました。そのため
+不採用とし、問題を起こしたcardではquarantine済みです。67.9から69.1 tok/sへの小さな変化は
+安全な改善値ではなく、本番設定にも採用していません。synthetic gateだけでは十分ではなく、
+実際に配信するengineを最後のqualification rungにする必要があります。
+
+全記録は[170Tune実験ノート](docs/lab/2026-09-13-170tune.md)を参照してください。hardware tuningは
+結果破損やGPU wedgeを起こし得ます。最初にstock値をsnapshotし、各cardを個別にgateし、
+永続化前にremote recovery手段を確保してください。
+
 ## ベンチマーク
 
 ```bash
@@ -218,6 +245,7 @@ OpenWebUI管理画面で接続先を保存済みの場合、persistent DB設定�
 - [SGLang](https://github.com/sgl-project/sglang)
 - [syv-ai/qwen38-27b-rtx3090](https://github.com/syv-ai/qwen38-27b-rtx3090)
 - [allover326/deepseek-v4-cmp170hx](https://github.com/allover326/deepseek-v4-cmp170hx)
+- [cachenetics/170tune](https://github.com/cachenetics/170tune)
 
 FP6/INT8、PLE offload、QSA、MTPの中核はSoomin33氏のcheckpoint同梱patchによるものです。この
 リポジトリは、検証したCMP 170HX環境向けのintegration、launcher、warmup、benchmark、安全guardを

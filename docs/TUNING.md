@@ -236,7 +236,31 @@ GPU image processorはtokenizer process側で別枠のCUDA allocationを行い�
 不意のOOMやcontext poisoningを起こす可能性があります。vision入力の前処理はPIL/CPU側へ寄せ、
 推論GPUのheadroomを守ります。
 
-## 14. 今後の優先順位
+## 14. 170Tune: HBMは採用、SM offsetは不採用
+
+`cachenetics/170tune` revision `93d0e72` を導入し、2枚をcardごとにpreflight、stock snapshot、
+full-VRAM gateしました。採用したhardware profileは次の通りです。
+
+```text
+SM offset=0（stock）
+SM clock lock=なし
+HBM NDIV=70
+REFRESH=24
+```
+
+HBMは各cardで12/12 sweeps、memory error 0、compute check合格、peak HBM 60℃でした。このexact
+combined profileだけをper-card profileへ保存し、`170tune-persist.service`でboot時に再適用します。
+
+SM `+250/1400` は各cardで4/4 sweepsと45秒のbit-exact GEMMを通過しました。しかしSGLangの
+1024-token decodeを繰り返したところ、片方のrankでXid 13 / illegal instructionを起こしserverが
+停止しました。synthetic gateのinstruction mixでは見つからない不安定性です。該当pointを
+quarantineし、両cardともSMをstockへ戻しました。
+
+この結果から、`gate`合格は必要条件であり、実際のSGLang workload合格が最終条件だと分かります。
+一度完走した69.1 tok/s中央値だけを採用根拠にしてはいけません。詳細は
+[`docs/lab/2026-09-13-170tune.md`](lab/2026-09-13-170tune.md)に記録しています。
+
+## 15. 今後の優先順位
 
 1. workload別にMTP acceptanceを記録し、step/draftを自動選択
 2. verify attentionのSM80向けsplit-KV再調整

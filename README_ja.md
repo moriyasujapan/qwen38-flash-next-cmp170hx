@@ -144,6 +144,14 @@ curl http://127.0.0.1:18020/v1/chat/completions \
 - P2Pを明示的に無効化し、NCCL SHM transportを使用
 - FP6 GEMV3 expert pathとFP16-placement decodeを有効化
 - GDN/Mamba temporal stateをFP16化
+- 本番MTP設定: `NEXTN`、投機1ステップ、draft 2 token
+- 本番QSA設定: Triton packed decode、`BLOCK_S=128`、`WARPS=8`
+- Dense W8計測は無効 (`SGLANG_W8_TIMING=0`)
+
+これらを研究ブランチで検証した本番推奨値とします。QSAは一部synthetic shapeで
+`BLOCK_S=256/WARPS=8`が僅かに速かったものの、全体のデフォルトを変更する根拠には
+不足しているため128/8を維持します。PLE INT8/INT4は実験段階で、本番はraw FP8
+sidecarを使用します。
 - chunked prefill 4096
 - max running requests 3
 - decode CUDA Graph batch 1/2/3

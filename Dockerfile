@@ -3,7 +3,7 @@ ARG BASE_IMAGE=lmsysorg/sglang:qwen38flashnext@sha256:5ae5816783d58e2e56e84d2e86
 FROM ${BASE_IMAGE}
 
 COPY vendor/sglang-fp6.patch /tmp/sglang-fp6.patch
-COPY patches/logprob_guard.py patches/apply_logprob_guard.py /tmp/
+COPY patches/logprob_guard.py patches/apply_logprob_guard.py patches/apply_research_overlays.py /tmp/
 
 RUN set -eux; \
     cd /sgl-workspace/sglang; \
@@ -16,6 +16,7 @@ RUN set -eux; \
       python/sglang/srt/managers/scheduler.py; \
     grep -q 'Event(blocking=True)' python/sglang/srt/managers/scheduler.py; \
     python3 /tmp/apply_logprob_guard.py; \
+    python3 /tmp/apply_research_overlays.py; \
     test "$(grep -c '_check_input_logprob_span(' python/sglang/srt/managers/tokenizer_manager.py)" -ge 2; \
     for f in \
       python/sglang/srt/layers/quantization/fp6.py \

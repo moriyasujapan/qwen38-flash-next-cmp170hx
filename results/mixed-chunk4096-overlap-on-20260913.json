@@ -1,0 +1,55 @@
+{
+  "schema": "mixed-workload-v1",
+  "config_label": "chunk4096-overlap-on",
+  "url": "http://127.0.0.1:18020/v1/chat",
+  "long_repeat": 500,
+  "interactive_count": 4,
+  "interactive_delay_s": 0.5,
+  "results": [
+    {
+      "label": "long_prefill",
+      "started_at": 15130.026324309,
+      "ttft_s": 8.311546086000817,
+      "e2e_s": 11.779136819000996,
+      "output_chars": 467,
+      "decode_chars_per_s": 134.67563964676677,
+      "error": null
+    },
+    {
+      "label": "interactive_0",
+      "started_at": 15130.527891449,
+      "ttft_s": 7.810490753998238,
+      "e2e_s": 9.339788591998513,
+      "output_chars": 303,
+      "decode_chars_per_s": 198.13014343641902,
+      "error": null
+    },
+    {
+      "label": "interactive_1",
+      "started_at": 15130.528772518,
+      "ttft_s": 7.824607998998545,
+      "e2e_s": 10.010980267999912,
+      "output_chars": 344,
+      "decode_chars_per_s": 157.33825610453937,
+      "error": null
+    },
+    {
+      "label": "interactive_2",
+      "started_at": 15130.529710243,
+      "ttft_s": 10.640668582000217,
+      "e2e_s": 12.066493190999608,
+      "output_chars": 353,
+      "decode_chars_per_s": 247.5760326845015,
+      "error": null
+    },
+    {
+      "label": "interactive_3",
+      "started_at": 15130.53061807,
+      "ttft_s": 9.968546436999532,
+      "e2e_s": 11.92512268399878,
+      "output_chars": 326,
+      "decode_chars_per_s": 166.617580326848,
+      "error": null
+    }
+  ]
+}

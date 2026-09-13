@@ -52,6 +52,10 @@ exec docker run -d --name "$NAME" \
   -e NCCL_SHM_DISABLE=0 \
   -e SGLANG_FP6_DECODE_FP16=1 \
   -e SGLANG_FP6_GEMV3=1 \
+  -e SGLANG_QSA_TRITON_FA="${SGLANG_QSA_TRITON_FA:-1}" \
+  -e SGLANG_QSA_BLOCK_S="${SGLANG_QSA_BLOCK_S:-128}" \
+  -e SGLANG_QSA_WARPS="${SGLANG_QSA_WARPS:-8}" \
+  -e SGLANG_W8_TIMING="${SGLANG_W8_TIMING:-0}" \
   -e SGLANG_MAX_INPUT_LOGPROB_TOKENS=1024 \
   --entrypoint python3 \
   "$IMAGE" -m sglang.launch_server \

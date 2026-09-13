@@ -27,6 +27,7 @@ FP6/INT8・PLE offload・QSA patchを固定SGLang imageへ適用し、検証し�
 | RadixCacheによる短縮 | **15.02倍** |
 | GDN state FP32→FP16のKV capacity | 415,296→**481,344 tokens** |
 | 170Tune HBM gate、NDIV70 / REFRESH24 | **各card 12/12、error 0** |
+| 最終SM-stock＋検証済みHBM decode | **中央値70.5 tok/s、3/3完走** |
 | 170Tune SM +250 / 1400候補 | **SGLang実負荷でXid 13、不採用** |
 
 `quick_bench.py`と`bench_matrix.py`はpromptと生成長が異なります。67.9 tok/sは1024 token生成
@@ -186,6 +187,10 @@ qualificationはcardごとです。receiptやpersist profileを別cardへコピ�
 不採用とし、問題を起こしたcardではquarantine済みです。67.9から69.1 tok/sへの小さな変化は
 安全な改善値ではなく、本番設定にも採用していません。synthetic gateだけでは十分ではなく、
 実際に配信するengineを最後のqualification rungにする必要があります。
+
+両SMをstockへ戻し、検証済みHBM profileだけを残した後の3-runは70.5 / 71.1 / 69.4 tok/s、
+中央値70.5 tok/sで完走し、新しいXidはありませんでした。SGLangとOpenWebUIはいずれもHTTP 200、
+OpenWebUI containerから設定済みOpenAI互換endpoint経由でserved model IDまで取得できました。
 
 全記録は[170Tune実験ノート](docs/lab/2026-09-13-170tune.md)を参照してください。hardware tuningは
 結果破損やGPU wedgeを起こし得ます。最初にstock値をsnapshotし、各cardを個別にgateし、

@@ -260,6 +260,10 @@ quarantineし、両cardともSMをstockへ戻しました。
 一度完走した69.1 tok/s中央値だけを採用根拠にしてはいけません。詳細は
 [`docs/lab/2026-09-13-170tune.md`](lab/2026-09-13-170tune.md)に記録しています。
 
+SM rollback後、HBM profileだけを残した本番構成は`quick_bench.py`を3/3完走し、decode中央値
+70.5 tok/s、TTFT 0.52–0.57秒、追加Xid 0件でした。OpenWebUI containerからSGLang model endpoint
+への疎通も確認しています。
+
 ## 15. 今後の優先順位
 
 1. workload別にMTP acceptanceを記録し、step/draftを自動選択

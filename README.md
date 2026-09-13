@@ -148,6 +148,14 @@ curl http://127.0.0.1:18020/v1/chat/completions \
 - P2P explicitly disabled; NCCL shared-memory transport retained
 - FP6 GEMV3 expert path and FP16-placement decode enabled
 - GDN/Mamba temporal state stored as FP16
+- Production MTP profile: `NEXTN`, one speculative step, two draft tokens
+- Production QSA profile: Triton packed decode, `BLOCK_S=128`, `WARPS=8`
+- Dense W8 timing instrumentation disabled (`SGLANG_W8_TIMING=0`)
+
+These are the recommended production defaults from the research branch. The QSA sweep found
+`BLOCK_S=256/WARPS=8` marginally faster for one synthetic shape, but not enough to justify a
+global default change. PLE INT8/INT4 candidates remain experimental; production uses the raw
+FP8 sidecar.
 - Chunked prefill size 4,096
 - Maximum three running requests
 - Decode CUDA Graphs captured for batch sizes 1, 2, and 3

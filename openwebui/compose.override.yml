@@ -1,0 +1,9 @@
+services:
+  open-webui:
+    environment:
+      OPENAI_API_BASE_URLS: http://host.docker.internal:18020/v1
+      OPENAI_API_KEYS: not-needed
+      ENABLE_OLLAMA: "false"
+      ENABLE_OLLAMA_API: "false"
+    extra_hosts:
+      - host.docker.internal:host-gateway

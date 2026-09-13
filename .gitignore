@@ -1,0 +1,8 @@
+.env
+vendor/*
+!vendor/.gitkeep
+__pycache__/
+*.pyc
+*.log
+gdn-quality-*.json
+.DS_Store

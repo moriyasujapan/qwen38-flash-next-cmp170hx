@@ -1,0 +1,6 @@
+*
+!Dockerfile
+!patches/
+!patches/*.py
+!vendor/
+!vendor/sglang-fp6.patch

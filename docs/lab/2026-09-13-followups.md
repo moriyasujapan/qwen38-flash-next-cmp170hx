@@ -68,3 +68,10 @@ These are reconstruction metrics, not model-quality or lookup-bandwidth results.
 runtime still consumes the FP8 raw sidecar. INT8 is a plausible next candidate; INT4 requires
 needle/semantic quality tests and a packed lookup kernel before promotion. Raw result:
 [`ple-quality-100k-20260913.json`](../../results/ple-quality-100k-20260913.json).
+
+## Serving sanity after research image
+
+After the controlled restart and first-use compilation, `bench/quick_bench.py` completed
+without errors. The three 1,024-token decode runs were 68.7, 68.9, and 69.0 tok/s (median
+68.9 tok/s); smoke TTFT was 1.09 s and smoke decode was 61.6 tok/s. This is close to the
+previous 67.9 tok/s baseline and is not attributed to QSA/W8 changes without a matched A/B.

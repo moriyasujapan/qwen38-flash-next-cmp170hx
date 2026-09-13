@@ -1,0 +1,13 @@
+{
+  "schema": "quick-bench-v1",
+  "image": "sglang-fp6:research-20260913",
+  "smoke": {
+    "prompt_tokens": 26,
+    "completion_tokens": 56,
+    "ttft_s": 1.09,
+    "decode_toks": 61.6
+  },
+  "decode_1024_toks": [68.7, 68.9, 69.0],
+  "decode_median_toks": 68.9,
+  "note": "Values transcribed from bench/quick_bench.py stdout; not a matched A/B attribution."
+}

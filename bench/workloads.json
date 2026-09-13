@@ -1,0 +1,32 @@
+[
+  {
+    "id": "code_python",
+    "category": "code",
+    "prompt": "Implement a persistent red-black tree in Python and explain insertion, deletion, structural sharing, and complexity."
+  },
+  {
+    "id": "code_patch",
+    "category": "code",
+    "prompt": "Return a unified diff that adds retry with exponential backoff to a small HTTP client. Include tests and no prose outside the diff."
+  },
+  {
+    "id": "japanese_explanation",
+    "category": "prose",
+    "prompt": "分散システムにおける線形化可能性と結果整合性の違いを、具体例を使って詳しく説明してください。"
+  },
+  {
+    "id": "reasoning_logic",
+    "category": "reasoning",
+    "prompt": "A service has three replicas. Exactly one is stale, two agree on value X, and writes may still be in flight. Analyze what can and cannot be concluded under eventual consistency."
+  },
+  {
+    "id": "verbatim_context",
+    "category": "copy",
+    "prompt": "Repeat the following block exactly ten times, preserving punctuation: cache-key::alpha-17; verify=true"
+  },
+  {
+    "id": "structured_json",
+    "category": "structured",
+    "prompt": "Generate a JSON array of 40 objects with fields id, dependency_ids, state, and retry_policy. Output valid JSON only."
+  }
+]
